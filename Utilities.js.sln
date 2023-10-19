@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34202.233
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "utilities", "utilities\utilities.esproj", "{82E63A04-D854-4AB3-BA96-EEEBB99F7152}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{15BE7F62-8C8A-4F57-AD33-5910C196A7F2}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{82E63A04-D854-4AB3-BA96-EEEBB99F7152}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82E63A04-D854-4AB3-BA96-EEEBB99F7152}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82E63A04-D854-4AB3-BA96-EEEBB99F7152}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{82E63A04-D854-4AB3-BA96-EEEBB99F7152}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82E63A04-D854-4AB3-BA96-EEEBB99F7152}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82E63A04-D854-4AB3-BA96-EEEBB99F7152}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5634BCC1-F7F3-4C00-AD4F-46BD27AD6451}
+	EndGlobalSection
+EndGlobal
