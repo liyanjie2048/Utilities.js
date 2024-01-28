@@ -7,6 +7,8 @@
     addDays(days: number): Date;
     addMonths(months: number): Date;
     addYears(years: number): Date;
+    dateOnly(): any;
+    timeOnly(): any;
 }
 interface WeekDisplay {
     sun?: string;
@@ -20,12 +22,12 @@ interface WeekDisplay {
 
 Date.prototype.format = function (format?: string, weekDisplay: WeekDisplay = {}) {
     let o = {
-        "M{1,2}": (<Date>this).getMonth() + 1, //月份
-        "d{1,2}": (<Date>this).getDate(), //日
-        "h{1,2}": (<Date>this).getHours() % 12 == 0 ? 12 : (<Date>this).getHours() % 12, //小时
-        "H{1,2}": (<Date>this).getHours(), //小时
-        "m{1,2}": (<Date>this).getMinutes(), //分
-        "s{1,2}": (<Date>this).getSeconds(), //秒
+        "M{1,2}": (this as Date).getMonth() + 1, //月份
+        "d{1,2}": (this as Date).getDate(), //日
+        "h{1,2}": (this as Date).getHours() % 12 == 0 ? 12 : (this as Date).getHours() % 12, //小时
+        "H{1,2}": (this as Date).getHours(), //小时
+        "m{1,2}": (this as Date).getMinutes(), //分
+        "s{1,2}": (this as Date).getSeconds(), //秒
     };
     let w = {
         "0": weekDisplay.sun || "星期日",
@@ -37,9 +39,9 @@ Date.prototype.format = function (format?: string, weekDisplay: WeekDisplay = {}
         "6": weekDisplay.sat || "星期六"
     };
     const match_y = format.match(/(y+)/);//年
-    (match_y) && (format = format.replace(match_y[0], (<Date>this).getFullYear().toString().substring(4 - match_y[0].length)));
+    (match_y) && (format = format.replace(match_y[0], (this as Date).getFullYear().toString().substring(4 - match_y[0].length)));
     const match_d = format.match(/(d{3,4})/);//星期
-    (match_d) && (format = format.replace(match_d[0], w[(<Date>this).getDay().toString()]));
+    (match_d) && (format = format.replace(match_d[0], w[(this as Date).getDay().toString()]));
     for (let k in o) {
         const match = format.match(`(${k})`);
         if (match) {
@@ -50,41 +52,43 @@ Date.prototype.format = function (format?: string, weekDisplay: WeekDisplay = {}
         }
     }
     const match_f = format.match(/(f{1,3})/);//毫秒
-    (match_f) && (format = format.replace(match_f[0], (<Date>this).getMilliseconds().toString().substring(3 - match_f[0].length)));
+    (match_f) && (format = format.replace(match_f[0], (this as Date).getMilliseconds().toString().substring(3 - match_f[0].length)));
     return format;
 };
 Date.prototype.addMillionSeconds = function (millionSeconds: number) {
-    let date = new Date((<Date>this).getTime());
+    let date = new Date((this as Date).getTime());
     date.setMilliseconds(date.getMilliseconds() + millionSeconds);
     return date;
 };
 Date.prototype.addSeconds = function (seconds: number) {
-    let date = new Date((<Date>this).getTime());
-    date.setSeconds((<Date>this).getSeconds() + seconds);
+    let date = new Date((this as Date).getTime());
+    date.setSeconds((this as Date).getSeconds() + seconds);
     return date;
 };
 Date.prototype.addMinutes = function (minutes: number) {
-    let date = new Date((<Date>this).getTime());
+    let date = new Date((this as Date).getTime());
     date.setMinutes(date.getMinutes() + minutes);
     return date;
 };
 Date.prototype.addHours = function (hours: number) {
-    let date = new Date((<Date>this).getTime());
+    let date = new Date((this as Date).getTime());
     date.setHours(date.getHours() + hours);
     return date;
 };
 Date.prototype.addDays = function (days: number) {
-    let date = new Date((<Date>this).getTime());
+    let date = new Date((this as Date).getTime());
     date.setDate(date.getDate() + days);
     return date;
 };
 Date.prototype.addMonths = function (months: number) {
-    let date = new Date((<Date>this).getTime());
+    let date = new Date((this as Date).getTime());
     date.setMonth(date.getMonth() + months);
     return date;
 };
 Date.prototype.addYears = function (years: number) {
-    let date = new Date((<Date>this).getTime());
+    let date = new Date((this as Date).getTime());
     date.setFullYear(date.getFullYear() + years);
     return date;
 };
+Date.prototype.dateOnly = function () { (this as Date).format('yyyy-MM-dd'); };
+Date.prototype.timeOnly = function () { (this as Date).format('HH:mm:ss'); };

@@ -3,7 +3,7 @@
 exports.default = {
     input: "./src/index.ts",
     output: {
-        file: "bundles/liyanjie.utilities.umd.js",
+        file: "./dist/liyanjie.utilities.js",
         name: "liyanjie.utilities",
         format: "umd"
     },

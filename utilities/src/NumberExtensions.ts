@@ -10,12 +10,12 @@ Number.prototype.plus = function (arg: number) {
     let r1, r2, m;
     try {
         r1 = this.toString().split('.')[1].length;
-    } catch (e) {
+    } catch (ex) {
         r1 = 0;
     }
     try {
         r2 = arg.toString().split('.')[1].length;
-    } catch (e) {
+    } catch (ex) {
         r2 = 0;
     }
     m = Math.pow(10, Math.max(r1, r2));
@@ -25,12 +25,12 @@ Number.prototype.minus = function (arg: number) {
     let r1, r2, m, n;
     try {
         r1 = this.toString().split('.')[1].length;
-    } catch (e) {
+    } catch (ex) {
         r1 = 0;
     }
     try {
         r2 = arg.toString().split('.')[1].length;
-    } catch (e) {
+    } catch (ex) {
         r2 = 0;
     }
     m = Math.pow(10, Math.max(r1, r2));
@@ -41,20 +41,20 @@ Number.prototype.multipy = function (arg: number) {
     let m = 0, s1 = this.toString(), s2 = arg.toString();
     try {
         m += s1.split('.')[1].length;
-    } catch (e) { }
+    } catch (ex) { }
     try {
         m += s2.split('.')[1].length;
-    } catch (e) { }
+    } catch (ex) { }
     return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m)
 };
 Number.prototype.divide = function (arg: number) {
     let t1 = 0, t2 = 0, r1, r2;
     try {
         t1 = this.toString().split('.')[1].length;
-    } catch (e) { }
+    } catch (ex) { }
     try {
         t2 = arg.toString().split('.')[1].length;
-    } catch (e) { }
+    } catch (ex) { }
     r1 = Number(this.toString().replace('.', ''));
     r2 = Number(arg.toString().replace('.', ''));
     return (r1 / r2) * Math.pow(10, t2 - t1);
