@@ -217,7 +217,7 @@ Number.prototype.toCn = function (outputType) {
     }
     var dec, index = numberString.indexOf('.');
     if (index > 0)
-        dec = numberString.substr(index + 1);
+        dec = numberString.substring(index + 1);
     if (dec) {
         switch (outputType) {
             case 'number':

@@ -1,17 +1,17 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('uuid')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'uuid'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.liyanjie = global.liyanjie || {}, global.liyanjie.utilities = {}), global.uuid));
-})(this, (function (exports, uuid) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+    typeof define === 'function' && define.amd ? define(['exports'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.liyanjie = global.liyanjie || {}, global.liyanjie.utilities = {})));
+})(this, (function (exports) { 'use strict';
 
     Date.prototype.format = function (format, weekDisplay) {
         if (weekDisplay === void 0) { weekDisplay = {}; }
         var o = {
-            "M{1,2}": this.getMonth() + 1,
-            "d{1,2}": this.getDate(),
-            "h{1,2}": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12,
-            "H{1,2}": this.getHours(),
-            "m{1,2}": this.getMinutes(),
+            "M{1,2}": this.getMonth() + 1, //月份
+            "d{1,2}": this.getDate(), //日
+            "h{1,2}": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, //小时
+            "H{1,2}": this.getHours(), //小时
+            "m{1,2}": this.getMinutes(), //分
             "s{1,2}": this.getSeconds(), //秒
         };
         var w = {
@@ -75,8 +75,43 @@
         date.setFullYear(date.getFullYear() + years);
         return date;
     };
-    Date.prototype.dateOnly = function () { this.format('yyyy-MM-dd'); };
-    Date.prototype.timeOnly = function () { this.format('HH:mm:ss'); };
+    Date.prototype.dateOnly = function () {
+        var format = 'yyyy-MM-dd';
+        var o = {
+            "M{1,2}": this.getMonth() + 1, //月份
+            "d{1,2}": this.getDate(), //日
+        };
+        var match_y = format.match(/(y+)/); //年
+        (match_y) && (format = format.replace(match_y[0], this.getFullYear().toString().substring(4 - match_y[0].length)));
+        for (var k in o) {
+            var match = format.match("(".concat(k, ")"));
+            if (match) {
+                var value = match[0].length === 1
+                    ? (o[k])
+                    : ("00".concat(o[k])).substring(o[k].toString().length);
+                format = format.replace(match[0], value);
+            }
+        }
+        return format;
+    };
+    Date.prototype.timeOnly = function () {
+        var format = 'HH:mm:ss';
+        var o = {
+            "H{1,2}": this.getHours(), //小时
+            "m{1,2}": this.getMinutes(), //分
+            "s{1,2}": this.getSeconds(), //秒
+        };
+        for (var k in o) {
+            var match = format.match("(".concat(k, ")"));
+            if (match) {
+                var value = match[0].length === 1
+                    ? (o[k])
+                    : ("00".concat(o[k])).substring(o[k].toString().length);
+                format = format.replace(match[0], value);
+            }
+        }
+        return format;
+    };
 
     Number.prototype.plus = function (arg) {
         var r1, r2, m;
@@ -292,7 +327,7 @@
         }
         var dec, index = numberString.indexOf('.');
         if (index > 0)
-            dec = numberString.substr(index + 1);
+            dec = numberString.substring(index + 1);
         if (dec) {
             switch (outputType) {
                 case 'number':
@@ -324,16 +359,89 @@
         return s;
     };
 
+    // Unique ID creation requires a high quality random # generator. In the browser we therefore
+    // require the crypto API and do not support built-in fallback to lower quality random number
+    // generators (like Math.random()).
+    let getRandomValues;
+    const rnds8 = new Uint8Array(16);
+    function rng() {
+      // lazy load so that environments that need to polyfill have a chance to do so
+      if (!getRandomValues) {
+        // getRandomValues needs to be invoked in a context where "this" is a Crypto implementation.
+        getRandomValues = typeof crypto !== 'undefined' && crypto.getRandomValues && crypto.getRandomValues.bind(crypto);
+
+        if (!getRandomValues) {
+          throw new Error('crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported');
+        }
+      }
+
+      return getRandomValues(rnds8);
+    }
+
+    var REGEX = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
+
+    function validate(uuid) {
+      return typeof uuid === 'string' && REGEX.test(uuid);
+    }
+
+    /**
+     * Convert array of 16 byte values to UUID string format of the form:
+     * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+     */
+
+    const byteToHex = [];
+
+    for (let i = 0; i < 256; ++i) {
+      byteToHex.push((i + 0x100).toString(16).slice(1));
+    }
+
+    function unsafeStringify(arr, offset = 0) {
+      // Note: Be careful editing this code!  It's been tuned for performance
+      // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
+      return byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + '-' + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + '-' + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + '-' + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + '-' + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]];
+    }
+
+    const randomUUID = typeof crypto !== 'undefined' && crypto.randomUUID && crypto.randomUUID.bind(crypto);
+    var native = {
+      randomUUID
+    };
+
+    function v4(options, buf, offset) {
+      if (native.randomUUID && !buf && !options) {
+        return native.randomUUID();
+      }
+
+      options = options || {};
+      const rnds = options.random || (options.rng || rng)(); // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+
+      rnds[6] = rnds[6] & 0x0f | 0x40;
+      rnds[8] = rnds[8] & 0x3f | 0x80; // Copy bytes to buffer, if provided
+
+      if (buf) {
+        offset = offset || 0;
+
+        for (let i = 0; i < 16; ++i) {
+          buf[offset + i] = rnds[i];
+        }
+
+        return buf;
+      }
+
+      return unsafeStringify(rnds);
+    }
+
+    var NIL = '00000000-0000-0000-0000-000000000000';
+
     /**
      * Guid
      */
     var Guid = /** @class */ (function () {
         function Guid(input) {
-            this._uuid = uuid.NIL;
-            if (input && typeof (input) === 'string' && uuid.validate(input))
+            this._uuid = NIL;
+            if (input && typeof (input) === 'string' && validate(input))
                 this._uuid = input;
             else
-                this._uuid = uuid.NIL;
+                this._uuid = NIL;
         }
         /**
          * 返回一个值，该值指示 Guid 的两个实例是否表示同一个值
@@ -375,7 +483,7 @@
                 return this._uuid;
         };
         Guid.parse = function (input) {
-            if (uuid.validate(input))
+            if (validate(input))
                 return new Guid(input);
             else
                 return undefined;
@@ -384,14 +492,14 @@
          * 初始化 Guid 类的一个新实例
          */
         Guid.newGuid = function () {
-            return new Guid(uuid.v4());
+            return new Guid(v4());
         };
         /**
          * Guid 字符串：“xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx”
          * @returns
          */
         Guid.newGuidStr = function () {
-            return uuid.v4();
+            return v4();
         };
         /**
          * Guid 类的默认实例，其值保证均为零
@@ -400,10 +508,11 @@
         /**
          * Guid 空字符串：“00000000-0000-0000-0000-000000000000”
          */
-        Guid.emptyStr = uuid.NIL;
+        Guid.emptyStr = NIL;
         return Guid;
     }());
 
     exports.Guid = Guid;
 
 }));
+//# sourceMappingURL=liyanjie.utilities.js.map

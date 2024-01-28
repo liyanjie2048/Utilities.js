@@ -1,11 +1,11 @@
 Date.prototype.format = function (format, weekDisplay) {
     if (weekDisplay === void 0) { weekDisplay = {}; }
     var o = {
-        "M{1,2}": this.getMonth() + 1,
-        "d{1,2}": this.getDate(),
-        "h{1,2}": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12,
-        "H{1,2}": this.getHours(),
-        "m{1,2}": this.getMinutes(),
+        "M{1,2}": this.getMonth() + 1, //月份
+        "d{1,2}": this.getDate(), //日
+        "h{1,2}": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, //小时
+        "H{1,2}": this.getHours(), //小时
+        "m{1,2}": this.getMinutes(), //分
         "s{1,2}": this.getSeconds(), //秒
     };
     var w = {
@@ -69,6 +69,41 @@ Date.prototype.addYears = function (years) {
     date.setFullYear(date.getFullYear() + years);
     return date;
 };
-Date.prototype.dateOnly = function () { this.format('yyyy-MM-dd'); };
-Date.prototype.timeOnly = function () { this.format('HH:mm:ss'); };
+Date.prototype.dateOnly = function () {
+    var format = 'yyyy-MM-dd';
+    var o = {
+        "M{1,2}": this.getMonth() + 1, //月份
+        "d{1,2}": this.getDate(), //日
+    };
+    var match_y = format.match(/(y+)/); //年
+    (match_y) && (format = format.replace(match_y[0], this.getFullYear().toString().substring(4 - match_y[0].length)));
+    for (var k in o) {
+        var match = format.match("(".concat(k, ")"));
+        if (match) {
+            var value = match[0].length === 1
+                ? (o[k])
+                : ("00".concat(o[k])).substring(o[k].toString().length);
+            format = format.replace(match[0], value);
+        }
+    }
+    return format;
+};
+Date.prototype.timeOnly = function () {
+    var format = 'HH:mm:ss';
+    var o = {
+        "H{1,2}": this.getHours(), //小时
+        "m{1,2}": this.getMinutes(), //分
+        "s{1,2}": this.getSeconds(), //秒
+    };
+    for (var k in o) {
+        var match = format.match("(".concat(k, ")"));
+        if (match) {
+            var value = match[0].length === 1
+                ? (o[k])
+                : ("00".concat(o[k])).substring(o[k].toString().length);
+            format = format.replace(match[0], value);
+        }
+    }
+    return format;
+};
 //# sourceMappingURL=DateExtensions.js.map

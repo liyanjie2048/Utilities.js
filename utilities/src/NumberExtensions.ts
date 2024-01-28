@@ -119,7 +119,7 @@ function __toCnNumber(number: number, uppercase: boolean): string {
 Number.prototype.toCn = function (outputType: string = 'number') {
     outputType = outputType.toLowerCase();
     let number = this as number;
-    let numberString = this.toString();
+    let numberString = this.toString() as string;
     let s = '';
     if (numberString[0] == '-') {
         s += '负';
@@ -223,7 +223,7 @@ Number.prototype.toCn = function (outputType: string = 'number') {
 
     let dec, index = numberString.indexOf('.');
     if (index > 0)
-        dec = numberString.substr(index + 1);
+        dec = numberString.substring(index + 1);
     if (dec) {
         switch (outputType) {
             case 'number':

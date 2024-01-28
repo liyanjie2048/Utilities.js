@@ -90,5 +90,46 @@ Date.prototype.addYears = function (years: number) {
     date.setFullYear(date.getFullYear() + years);
     return date;
 };
-Date.prototype.dateOnly = function () { (this as Date).format('yyyy-MM-dd'); };
-Date.prototype.timeOnly = function () { (this as Date).format('HH:mm:ss'); };
+Date.prototype.dateOnly = function ()
+{
+    let format = 'yyyy-MM-dd';
+    let o = {
+        "M{1,2}": (this as Date).getMonth() + 1, //月份
+        "d{1,2}": (this as Date).getDate(), //日
+    };
+    const match_y = format.match(/(y+)/);//年
+    (match_y) && (format = format.replace(match_y[0], (this as Date).getFullYear().toString().substring(4 - match_y[0].length)));
+    for (let k in o)
+    {
+        const match = format.match(`(${k})`);
+        if (match)
+        {
+            let value = match[0].length === 1
+                ? (o[k])
+                : (`00${o[k]}`).substring(o[k].toString().length);
+            format = format.replace(match[0], value);
+        }
+    }
+    return format;
+};
+Date.prototype.timeOnly = function ()
+{
+    let format = 'HH:mm:ss';
+    let o = {
+        "H{1,2}": (this as Date).getHours(), //小时
+        "m{1,2}": (this as Date).getMinutes(), //分
+        "s{1,2}": (this as Date).getSeconds(), //秒
+    };
+    for (let k in o)
+    {
+        const match = format.match(`(${k})`);
+        if (match)
+        {
+            let value = match[0].length === 1
+                ? (o[k])
+                : (`00${o[k]}`).substring(o[k].toString().length);
+            format = format.replace(match[0], value);
+        }
+    }
+    return format;
+};
